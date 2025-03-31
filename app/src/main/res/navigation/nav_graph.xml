@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:id="@+id/nav_graph"
+    app:startDestination="@id/galleryFragment">
+
+    <fragment
+        android:id="@+id/galleryFragment"
+        android:name="com.example.pix.ui.GalleryFragment"
+        android:label="Flickr Gallery">
+        <action
+            android:id="@+id/action_galleryFragment_to_detailFragment"
+            app:destination="@id/detailFragment" />
+    </fragment>
+
+    <fragment
+        android:id="@+id/detailFragment"
+        android:name="com.example.pix.ui.DetailFragment"
+        android:label="Photo Detail">
+        <argument
+            android:name="photoUrl"
+            app:argType="string" />
+        <argument
+            android:name="photoTitle"
+            app:argType="string" />
+    </fragment>
+
+</navigation>
