@@ -2,37 +2,35 @@ package com.example.pix.ui
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import androidx.paging.PagingData
+import androidx.paging.cachedIn
 import com.example.pix.data.flickr.FlickrRepository
+import com.example.pix.data.flickr.dto.PhotoDto
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
-import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
 class GalleryViewModel @Inject constructor(
     private val repository: FlickrRepository
 ) : ViewModel() {
-    private val _photos = MutableStateFlow<Resource<List<FlickrPhoto>>>(Resource.Loading())
-    val photos: StateFlow<Resource<List<FlickrPhoto>>> = _photos
-
-    private val _cachedPhotos = repository.getPhotosStream()
-        .stateIn(
-            scope = viewModelScope,
-            started = SharingStarted.WhileSubscribed(5000),
-            initialValue = emptyList()
-        )
-    val cachedPhotos: StateFlow<List<FlickrPhoto>> = _cachedPhotos
+    private val _searchQuery = MutableStateFlow("nature")
+    private val _photos = MutableStateFlow<Flow<PagingData<PhotoDto>>?>(null)
+    val photos: StateFlow<Flow<PagingData<PhotoDto>>?> = _photos
 
     init {
-        fetchPhotos()
+        searchPhotos("nature")
     }
 
-    fun fetchPhotos(query: String = "nature") {
-        viewModelScope.launch {
-            _photos.value = Resource.Loading()
-            _photos.value = repository.searchPhotos(query)
-        }
+    fun searchPhotos(query: String) {
+        _searchQuery.value = query
+        _photos.value = repository.getPhotosPagingFlow(query)
+            .cachedIn(viewModelScope)
+    }
+
+    suspend fun clearCache(query: String) {
+        repository.clearCache(query)
     }
 }

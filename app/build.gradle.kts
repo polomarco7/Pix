@@ -39,6 +39,7 @@ android {
     }
     buildFeatures {
         compose = true
+        viewBinding = true
     }
     room {
         schemaDirectory("$projectDir/schemas")
@@ -94,4 +95,9 @@ dependencies {
     implementation (libs.androidx.recyclerview)
 
     implementation (libs.androidx.constraintlayout)
+
+    implementation (libs.androidx.room.paging)
+    implementation (libs.androidx.paging.runtime.ktx)
+    implementation (libs.appcompat)
+    implementation (libs.material)
 }

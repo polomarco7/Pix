@@ -16,13 +16,5 @@
     <fragment
         android:id="@+id/detailFragment"
         android:name="com.example.pix.ui.DetailFragment"
-        android:label="Photo Detail">
-        <argument
-            android:name="photoUrl"
-            app:argType="string" />
-        <argument
-            android:name="photoTitle"
-            app:argType="string" />
-    </fragment>
-
+        android:label="Photo Detail" />
 </navigation>

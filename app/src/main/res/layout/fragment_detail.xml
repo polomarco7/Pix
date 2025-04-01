@@ -29,8 +29,8 @@
         android:maxLines="1"
         android:padding="16dp"
         android:textColor="#FFFFFF"
-        app:layout_constraintTop="top"
-        app:layout_constraintStart="start"
-        tools:ignore="MissingConstraints" />
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -19,8 +19,8 @@ import javax.inject.Singleton
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
-    private const val BASE_URL = "https://api.flickr.com/services/"
-    private const val API_KEY = "YOUR_FLICKR_API_KEY" // Замените на ваш ключ
+    private const val BASE_URL = "https://api.flickr.com/"
+    private const val API_KEY = "da9d38d3dee82ec8dda8bb0763bf5d9c"
 
     @Provides
     @Singleton
@@ -50,7 +50,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFlickrPhotoDao(database: PictureDatabase): PictureDao {
-        return database.flickrPhotoDao()
+        return database.pictureDao()
     }
 
     @Provides
@@ -60,10 +60,9 @@ object AppModule {
     @Provides
     @Singleton
     fun provideFlickrRepository(
-        apiService: FlickrApiService,
-        flickrPhotoDao: FlickrPhotoDao,
-        @Named("apiKey") apiKey: String
+        apiService: FlickrApi,
+        pictureDao: PictureDao
     ): FlickrRepository {
-        return FlickrRepository(apiService, flickrPhotoDao, apiKey)
+        return FlickrRepository(apiService, pictureDao)
     }
 }
