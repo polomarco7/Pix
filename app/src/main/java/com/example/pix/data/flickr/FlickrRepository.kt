@@ -19,7 +19,7 @@ class FlickrRepository @Inject constructor(
             config = PagingConfig(
                 pageSize = 30,
                 enablePlaceholders = false,
-                initialLoadSize = 30
+                initialLoadSize = 50
             ),
             pagingSourceFactory = {
                 CombinedPagingSource(

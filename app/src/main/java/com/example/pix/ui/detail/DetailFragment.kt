@@ -1,12 +1,12 @@
-package com.example.pix.ui
+package com.example.pix.ui.detail
 
 import android.graphics.drawable.Drawable
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.navigation.fragment.findNavController
 import com.bumptech.glide.Glide
@@ -16,6 +16,7 @@ import com.bumptech.glide.request.RequestListener
 import com.bumptech.glide.request.target.Target
 import com.example.pix.data.flickr.dto.PhotoDto
 import com.example.pix.databinding.FragmentDetailBinding
+import com.example.pix.ui.detail.DetailViewModel
 import com.example.pix.utils.Resource
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -66,7 +67,7 @@ class DetailFragment : Fragment() {
 
         photo?.let {
             viewModel.setPhoto(it)
-            viewModel.loadPhoto(it.id)
+            viewModel.loadPhoto()
             loadImage(it)
         } ?: run {
             Toast.makeText(requireContext(), "Photo data not available", Toast.LENGTH_SHORT).show()

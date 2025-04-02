@@ -1,4 +1,4 @@
-package com.example.pix.ui
+package com.example.pix.ui.detail
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -26,7 +26,7 @@ class DetailViewModel @Inject constructor(
         _photo.value = photo
     }
 
-    fun loadPhoto(photoId: String) {
+    fun loadPhoto() {
         viewModelScope.launch {
             _imageLoadingState.value = Resource.Loading()
             try {

@@ -1,4 +1,4 @@
-package com.example.pix.ui
+package com.example.pix.ui.gallery
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -17,6 +17,7 @@ class GalleryViewModel @Inject constructor(
     private val repository: FlickrRepository
 ) : ViewModel() {
     private val _searchQuery = MutableStateFlow("nature")
+    val searchQuery: StateFlow<String> = _searchQuery
     private val _photos = MutableStateFlow<Flow<PagingData<PhotoDto>>?>(null)
     val photos: StateFlow<Flow<PagingData<PhotoDto>>?> = _photos
 

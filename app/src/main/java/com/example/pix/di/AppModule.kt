@@ -54,10 +54,6 @@ object AppModule {
     }
 
     @Provides
-    @Named("apiKey")
-    fun provideApiKey(): String = API_KEY
-
-    @Provides
     @Singleton
     fun provideFlickrRepository(
         apiService: FlickrApi,

@@ -4,7 +4,32 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     xmlns:tools="http://schemas.android.com/tools"
+    android:fitsSystemWindows="true"
     tools:context=".ui.MainActivity">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:fitsSystemWindows="true"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <com.google.android.material.appbar.MaterialToolbar
+            android:id="@+id/toolbar"
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            app:layout_scrollFlags="scroll|enterAlways"
+            android:background="?attr/colorPrimary"
+            android:fitsSystemWindows="true"
+            app:popupTheme="@style/ThemeOverlay.MaterialComponents.Light"
+            app:menu="@menu/menu_gallery"
+            app:navigationIcon="@drawable/ic_menu"
+            app:title="@string/app_name"
+            app:titleTextColor="@color/white"/>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <fragment
         android:id="@+id/nav_host_fragment"
@@ -14,8 +39,9 @@
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintLeft_toLeftOf="parent"
         app:layout_constraintRight_toRightOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/appBar"
         app:defaultNavHost="true"
-        app:navGraph="@navigation/nav_graph" />
-
+        app:layout_behavior="@string/appbar_scrolling_view_behavior"
+        app:navGraph="@navigation/nav_graph"
+        tools:layout="@layout/fragment_gallery"/>
 </androidx.constraintlayout.widget.ConstraintLayout>

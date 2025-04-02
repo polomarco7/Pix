@@ -6,7 +6,7 @@
 
     <fragment
         android:id="@+id/galleryFragment"
-        android:name="com.example.pix.ui.GalleryFragment"
+        android:name="com.example.pix.ui.gallery.GalleryFragment"
         android:label="Flickr Gallery">
         <action
             android:id="@+id/action_galleryFragment_to_detailFragment"
@@ -15,6 +15,6 @@
 
     <fragment
         android:id="@+id/detailFragment"
-        android:name="com.example.pix.ui.DetailFragment"
+        android:name="com.example.pix.ui.detail.DetailFragment"
         android:label="Photo Detail" />
 </navigation>

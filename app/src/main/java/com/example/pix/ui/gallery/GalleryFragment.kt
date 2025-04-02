@@ -1,12 +1,16 @@
-package com.example.pix.ui
+package com.example.pix.ui.gallery
 
 import android.os.Bundle
 import android.view.LayoutInflater
+import android.view.Menu
+import android.view.MenuInflater
+import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.EditorInfo
 import android.widget.Toast
+import androidx.appcompat.app.AppCompatActivity
 import androidx.appcompat.widget.SearchView
+import androidx.core.view.MenuProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.viewModels
 import androidx.lifecycle.lifecycleScope
@@ -15,8 +19,8 @@ import androidx.paging.LoadState
 import androidx.recyclerview.widget.GridLayoutManager
 import com.example.pix.R
 import com.example.pix.databinding.FragmentGalleryBinding
+import com.example.pix.ui.gallery.GalleryViewModel
 import com.example.pix.ui.adapter.FlickrPhotoAdapter
-import com.example.pix.ui.adapter.FlickrPhotoAdapter.Companion.LOADING_ITEM_TYPE
 import com.example.pix.ui.adapter.PhotosLoadStateAdapter
 import dagger.hilt.android.AndroidEntryPoint
 import kotlinx.coroutines.flow.collectLatest
@@ -28,6 +32,7 @@ class GalleryFragment : Fragment() {
     private val binding get() = _binding!!
     private val viewModel: GalleryViewModel by viewModels()
     private lateinit var adapter: FlickrPhotoAdapter
+    private var searchView: SearchView? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -45,7 +50,8 @@ class GalleryFragment : Fragment() {
         setupRecyclerView()
         observeViewModel()
         setupSwipeRefresh()
-        setupSearchView()
+        setupMenu()
+        setupToolbar()
     }
 
     private fun setupAdapter() {
@@ -73,7 +79,7 @@ class GalleryFragment : Fragment() {
                 spanSizeLookup = object : GridLayoutManager.SpanSizeLookup() {
                     override fun getSpanSize(position: Int): Int {
                         return when (adapter?.getItemViewType(position)) {
-                            LOADING_ITEM_TYPE -> spanCount
+                            FlickrPhotoAdapter.Companion.LOADING_ITEM_TYPE -> spanCount
                             else -> 1
                         }
                     }
@@ -121,26 +127,74 @@ class GalleryFragment : Fragment() {
         }
     }
 
-    private fun setupSearchView() {
-        binding.searchView.setOnQueryTextListener(object : SearchView.OnQueryTextListener {
-            override fun onQueryTextSubmit(query: String?): Boolean {
-                query?.let {
-                    refreshPhotos(it)
-                    binding.searchView.clearFocus()
-                }
-                return true
+    private fun setupMenu() {
+        requireActivity().addMenuProvider(object : MenuProvider {
+            override fun onCreateMenu(menu: Menu, menuInflater: MenuInflater) {
+                menuInflater.inflate(R.menu.menu_gallery, menu)
+
+                val searchItem = menu.findItem(R.id.action_search)
+                searchView = searchItem.actionView as SearchView
+
+                setupSearchView()
+                observeQueryChanges()
             }
-            override fun onQueryTextChange(newText: String?): Boolean = false
-        })
+
+            override fun onMenuItemSelected(menuItem: MenuItem): Boolean = false
+        }, viewLifecycleOwner)
     }
 
-    private fun refreshPhotos(query: String) {
-        lifecycleScope.launch {
-            viewModel.clearCache(query)
-            viewModel.searchPhotos(query)
+    private fun setupSearchView() {
+        searchView?.apply {
+            queryHint = getString(R.string.search_hint)
+
+            viewLifecycleOwner.lifecycleScope.launch {
+                viewModel.searchQuery.collect { query ->
+                    if (!isIconified) {
+                        setQuery(query, false)
+                    }
+                }
+            }
+
+            setOnQueryTextListener(object : SearchView.OnQueryTextListener {
+                override fun onQueryTextSubmit(query: String?): Boolean {
+                    query?.let {
+                        viewModel.searchPhotos(it)
+                        searchView?.clearFocus()
+                    }
+                    return true
+                }
+
+                override fun onQueryTextChange(newText: String?): Boolean {
+                    newText?.let {
+                        if (it.length >= 3) {
+                            viewModel.searchPhotos(it)
+                        }
+                    }
+                    return true
+                }
+            })
         }
     }
 
+    private fun observeQueryChanges() {
+        viewLifecycleOwner.lifecycleScope.launch {
+            viewModel.searchQuery.collect { query ->
+                if (searchView?.isIconified == false && searchView?.query?.toString() != query) {
+                    searchView?.setQuery(query, false)
+                }
+            }
+        }
+    }
+
+    private fun setupToolbar() {
+        (requireActivity() as AppCompatActivity).apply {
+            setSupportActionBar(requireActivity().findViewById(R.id.toolbar))
+            supportActionBar?.apply {
+                setDisplayHomeAsUpEnabled(false)
+                title = getString(R.string.app_name)
+            }
+        }
+    }
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
